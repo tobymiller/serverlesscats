@@ -23,9 +23,13 @@ lazy val root = (project in file("."))
 
       "io.circe"        %% "circe-core"          % CirceVersion,
       "io.circe"        %% "circe-generic"       % CirceVersion,
+      "io.circe"        %% "circe-parser"       % CirceVersion,
 
       "org.scalatest"   %% "scalatest"           % ScalaTestVersion  % Test,
-      "org.scalacheck"  %% "scalacheck"          % ScalaCheckVersion % Test
+      "org.scalacheck"  %% "scalacheck"          % ScalaCheckVersion % Test,
+      
+	  "com.amazonaws" % "aws-lambda-java-events" % "2.2.5",
+	  "com.amazonaws" % "aws-lambda-java-core" % "1.2.0"
     )
   )
 
