@@ -14,8 +14,9 @@ import cats.effect.IO
 import java.io.IOException
 import java.io.BufferedWriter
 import java.io.OutputStreamWriter
+import com.amazonaws.services.lambda.runtime.RequestStreamHandler
 
-class ServerlessHost(handler: Handler) extends App {
+class ServerlessHost(handler: Handler) extends RequestStreamHandler {
   def handleRequest(is: InputStream, os: OutputStream, context: Context): Unit = {
     val reader = new BufferedReader(new InputStreamReader(is))
     val writer = new BufferedWriter(new OutputStreamWriter(os))
@@ -25,7 +26,10 @@ class ServerlessHost(handler: Handler) extends App {
       jsonIo = IO.pure(json)
       handled = handler.handle(jsonIo)
       outString = handled.unsafeRunSync().toString()
-      written <- Either.catchOnly[IOException](writer.write(outString))
+      _ <- Either.catchOnly[IOException](writer.write(outString))
+      _ <- Either.catchOnly[IOException](writer.flush())
+      written <- Either.catchOnly[IOException](writer.close())
     } yield written
+    result.left.foreach(e => throw e)
   }
 }
