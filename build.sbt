@@ -18,6 +18,7 @@ lazy val root = (project in file("."))
       "-language:higherKinds",
       "-Ypartial-unification"
     ),
+    scalacOptions in Test ++= Seq("-Yrangepos"),
     libraryDependencies ++= Seq(
       "org.typelevel"   %% "cats-effect"         % CatsEffectVersion,
 
@@ -27,9 +28,10 @@ lazy val root = (project in file("."))
 
       "org.scalatest"   %% "scalatest"           % ScalaTestVersion  % Test,
       "org.scalacheck"  %% "scalacheck"          % ScalaCheckVersion % Test,
-      
-	  "com.amazonaws" % "aws-lambda-java-events" % "2.2.5",
-	  "com.amazonaws" % "aws-lambda-java-core" % "1.2.0"
+      "org.specs2" %% "specs2-core" % "4.3.4" % "test",
+
+      "com.amazonaws" % "aws-lambda-java-events" % "2.2.5",
+      "com.amazonaws" % "aws-lambda-java-core" % "1.2.0"
     )
   )
 
