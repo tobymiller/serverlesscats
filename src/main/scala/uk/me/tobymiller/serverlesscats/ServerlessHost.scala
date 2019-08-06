@@ -16,6 +16,9 @@ import java.io.IOException
 import java.io.BufferedWriter
 import java.io.OutputStreamWriter
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.nio.charset.StandardCharsets
 
 class ServerlessHost(handler: Handler) extends RequestStreamHandler {
   private def catchAll[E](in: => E) = EitherT.fromEither[IO](Either.catchNonFatal[E](in))
@@ -32,5 +35,11 @@ class ServerlessHost(handler: Handler) extends RequestStreamHandler {
       written <- catchAll(writer.close())
     } yield written).value.unsafeRunSync
     result.left.foreach(e => throw e)
+  }
+  
+  def debugRun(input: String): String = {
+    val outStream = new ByteArrayOutputStream
+    handleRequest(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)), outStream, null)
+    new String(outStream.toByteArray(), StandardCharsets.UTF_8)
   }
 }
